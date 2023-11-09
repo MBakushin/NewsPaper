@@ -1,0 +1,54 @@
+>>> from news.models import *
+>>> u1 = User.objects.create_user('Vasya')
+>>> u2 = User.objects.create_user('Kirill')
+>>> a1 = Author.objects.create(user=u1)
+>>> a2 = Author.objects.create(user=u2)
+>>> cat1 = Category.objects.create(title='sport')
+>>> cat2 = Category.objects.create(title='movie')
+>>> cat3 = Category.objects.create(title='cars')
+>>> cat4 = Category.objects.create(title='music')
+>>> news1 = Post.objects.create(note='AR', header='top soundtrack 2023', text='Miley Cyrus, "Flowers". When Miley Cyrus released her buzzy new song “Flowers” at the top of the year, a lot was made of the potential Easter eggs suggesting the song was inspired by her divorce from Liam Hemsworth - from its release on the actors birthday, to lyrics referencing building a home and watching it burn, just like theirs did in a 2018 Malibu wildfire. But in the end, the power of the song wasnt in the personal-life specifics; it was in the universalities.', author=a1)
+>>> news1.categories.set([cat2, cat4])
+>>> news2 = Post.objects.create(note='AR', header='The fastest car', text='That title goes to the Koenigsegg Jesko Absolut, which recorded a staggering 330 mph top speed earlier in 2023. The car’s twin-turbocharged 5.0-liter V8 lays down 1,600 horsepower and 1,106 pound-feet of torque, which plays a significant role in delivering that speed, but Koenigsegg’s engineers have given the car a lot more than mind-blowing power.', author=a2)
+>>> news2.categories.set([cat3])
+>>> news3 = Post.objects.create(header='2023 Championship', text='The 2023 NBA Finals was the championship series of the National Basketball Association 2022-2023 season and conclusion to the season playoffs. The best-of-seven playoffs was played between Miami Heat and Denver Nuggets. The Nuggets defeated the Heat in four of five games, winning their first championship in franchise.', author=a2)
+>>> news3.categories.set([cat1])
+>>> com1 = Comment.objects.create(text='Very informative article!', post=news1, user=u2)
+>>> com2 = Comment.objects.create(text='Thanks!', post=news1, user=u1)
+>>> com3 = Comment.objects.create(text='I suppose this inf can`t be truth', post=news2, user=u1)
+>>> com4 = Comment.objects.create(text='Nuggets rules', post=news3), user=u1)
+>>> for _ in range(3):
+        news1.like()
+        news3.like()
+>>> for _ in range(4):
+        news2.like()
+>>> news3.dislike()
+>>> for _ in range(5):
+        com1.like()
+        com2.like()
+        com3.dislike()
+>>> com3.like()
+>>> com4.like()
+>>> a1.update_rating()
+>>> a2.update_rating()
+
+----------------------------------------------------------------------------------------------------------
+>>> best_a = Author.objects.all().order_by('-rating').first()
+>>> best_a_dict = {'username': best_a.user, 'rating': best_a.rating}
+>>> best_a_dict
+>>> best_news = Post.objects.all().order_by('-rating').first()
+>>> best_news_a = best_news.author
+>>> best_news_dict = {'time_to_create': best_news.time_to_create.strftime('%d-%m-%Y %H:%M:%S'),
+                      'username': best_news_a.user,
+                      'rating': best_news.rating,
+                      'header': best_news.header,
+                      'preview': best_news.preview()}
+>>> best_news_dict
+>>> best_news_com = Comment.objects.filter(post=best_news)
+>>> best_news_com_dict = dict()
+>>> for com in best_news_com:
+        best_news_com_dict[com] = {'date': com.time_to_create.strftime('%d-%m-%Y'),
+                                   'user': com.user,
+                                   'rating': com.rating,
+                                   'text': com.text}
+>>> best_news_com_dict
