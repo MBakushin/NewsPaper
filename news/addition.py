@@ -10,6 +10,7 @@ NOTES = [
 
 class Grade:
     """Class contains two simple methods for models Post and Comment"""
+    rating = 0
     def like(self):
         self.rating += 1
         self.save()

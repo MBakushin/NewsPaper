@@ -16,7 +16,7 @@
 >>> com1 = Comment.objects.create(text='Very informative article!', post=news1, user=u2)
 >>> com2 = Comment.objects.create(text='Thanks!', post=news1, user=u1)
 >>> com3 = Comment.objects.create(text='I suppose this inf can`t be truth', post=news2, user=u1)
->>> com4 = Comment.objects.create(text='Nuggets rules', post=news3), user=u1)
+>>> com4 = Comment.objects.create(text='Nuggets rules', post=news3, user=u1)
 >>> for _ in range(3):
         news1.like()
         news3.like()
