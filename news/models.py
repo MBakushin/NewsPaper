@@ -1,12 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User  # mb need alias like authUser
-from news.addition import *
+from .addition import *
 
 
 class Author(models.Model):
     rating = models.IntegerField(default=0)
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
 
     def update_rating(self):
         self.rating = 0
@@ -37,6 +40,8 @@ class Category(models.Model):
 
     posts = models.ManyToManyField('Post', through='PostCategory')
 
+    def __str__(self):
+        return self.title
 
 class Post(models.Model, Grade):
     note = models.CharField(max_length=2, choices=NOTES, default=news)
@@ -48,6 +53,9 @@ class Post(models.Model, Grade):
 
     author = models.ForeignKey('Author', on_delete=models.CASCADE)
     categories = models.ManyToManyField('Category', through='PostCategory')
+
+    def __str__(self):
+        return f"{self.note}: {self.header}"
 
     def preview(self):
         return f"{self.text[:125]}..."
@@ -66,3 +74,6 @@ class Comment(models.Model, Grade):
 
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.text[:20]

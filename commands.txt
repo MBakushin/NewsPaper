@@ -33,6 +33,8 @@
 >>> a2.update_rating()
 
 ----------------------------------------------------------------------------------------------------------
+best_a = Author.objects.all().order_by('rating').first().values('user__username', 'rating')
+
 >>> best_a = Author.objects.all().order_by('-rating').first()
 >>> best_a_dict = {'username': best_a.user, 'rating': best_a.rating}
 >>> best_a_dict

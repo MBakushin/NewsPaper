@@ -1,0 +1,12 @@
+{% extends 'flatpages/default.html' %}
+
+{% load censor_filters %}
+
+{% block title %}
+  Post
+{% endblock title %}
+
+{% block content %}
+  <h2 style="text-align: center">{{ news.header|censor_filter }}</h2>
+  <p>{{ news.time_to_update|date:'M d Y' }}, {{ news.text|censor_filter }}</p>
+{% endblock content %}
