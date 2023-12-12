@@ -57,6 +57,9 @@ class Post(models.Model, Grade):
     def __str__(self):
         return f"{self.note}: {self.header}"
 
+    def get_absolute_url(self):
+        return f'/news/{self.pk}'
+
     def preview(self):
         return f"{self.text[:125]}..."
 

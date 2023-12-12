@@ -2,9 +2,7 @@
 
 {% load censor_filters %}
 
-{% block title %}
-  Post
-{% endblock title %}
+{% block title %}Post{% endblock title %}
 
 {% block content %}
   <h2 style="text-align: center">{{ news.header|censor_filter }}</h2>

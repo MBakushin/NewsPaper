@@ -1,0 +1,18 @@
+{% extends 'flatpages/default.html' %}
+
+{% load censor_filters %}
+
+{% block title %}Delete news{% endblock title %}
+
+{% block content %}
+<h2>Do you really want to delete this news?</h2>
+
+<h5>{{ news.header|censor_filter }}</h5>
+<p>{{ news.time_to_update|date:'M d Y' }}, {{ news.text|truncatechars:300|censor_filter }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="confirm">
+</form>
+
+{% endblock content %}
