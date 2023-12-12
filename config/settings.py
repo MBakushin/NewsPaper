@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # add django-filters
+    'django_filters',
+
     # add sites, flatpages, fpages
     'django.contrib.sites',
     'django.contrib.flatpages',
