@@ -5,6 +5,9 @@
 {% block title %}Post{% endblock title %}
 
 {% block content %}
-  <h2 style="text-align: center">{{ news.header|censor_filter }}</h2>
-  <p>{{ news.time_to_update|date:'M d Y' }}, {{ news.text|censor_filter }}</p>
+  <h2 style="text-align: center">{{ news_detail.header|censor_filter }}</h2>
+  <p>{{ news_detail.time_to_update|date:'M d Y' }}, {{ news_detail.text|censor_filter }}</p>
+  {% if is_authors %}
+  <button><a href="{% url 'news_edit' news_detail.pk %}">Edit news</a></button>
+  {% endif %}
 {% endblock content %}

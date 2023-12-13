@@ -3,10 +3,10 @@ from .views import *
 
 
 urlpatterns = [
-    path('', NewsList.as_view(), name='news_list'),
-    path('<int:pk>', NewsDetail.as_view(), name='news_detail'),
-    path('search/', NewsSearch.as_view(), name='news_search'),
-    path('add/', NewsCreate.as_view(), name='news_add'),
-    path('<int:pk>/edit/', NewsUpdate.as_view(), name='news_update'),
-    path('<int:pk>/delete', NewsDelete.as_view(), name='news_delete'),
+    path('', NewsListView.as_view(), name='news_list'),
+    path('<int:pk>/', NewsDetailView.as_view(), name='news_detail'),
+    path('search/', NewsSearchView.as_view(), name='news_search'),
+    path('add/', NewsAddView.as_view(), name='news_add'),
+    path('<int:pk>/edit/', NewsEditView.as_view(), name='news_edit'),
+    path('<int:pk>/delete/', NewsDeleteView.as_view(), name='news_delete'),
 ]
