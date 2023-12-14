@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView,\
                                  DeleteView, View
 
@@ -45,7 +45,7 @@ class NewsDetailView(BecameAuthor, DetailView):
     context_object_name = 'news_detail'
 
 
-class NewsSearchView(ListView):
+class NewsSearchView(BecameAuthor, ListView):
     model = Post
     template_name = 'search.html'
     context_object_name = 'search'
@@ -64,23 +64,27 @@ class NewsSearchView(ListView):
         }
 
 
-class NewsAddView(BecameAuthor, LoginRequiredMixin, CreateView):
+class NewsAddView(BecameAuthor, PermissionRequiredMixin, CreateView):
     template_name = 'news_add.html'
     context_object_name = 'news'
     form_class = NewsForm
+    permission_required = ('news.add_post', )
 
 
-class NewsEditView(BecameAuthor, LoginRequiredMixin, UpdateView):
+class NewsEditView(BecameAuthor, PermissionRequiredMixin,
+                   UpdateView):
     template_name = 'news_add.html'
     form_class = NewsForm
+    permission_required = ('news.change_post', )
 
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
 
 
-class NewsDeleteView(BecameAuthor, LoginRequiredMixin, DeleteView):
+class NewsDeleteView(BecameAuthor, PermissionRequiredMixin, DeleteView):
     template_name = 'news_delete.html'
     context_object_name = 'news'
     queryset = Post.objects.all()
     success_url = '/news/'
+    permission_required = ('news.view_post', )
