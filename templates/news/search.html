@@ -5,13 +5,14 @@
 {% block title %}Search news{% endblock title %}
 
 {% block content %}
-  <!-- Перед списком новостей добавим форму для поиска -->
-  <form method="GET">
-    {{ filter.form }} <!-- Форму от фильтров за нас сделает Django. -->
-    <input type="submit" value="Найти">
-  </form>
+  <div style="padding: 1rem">
+    <!-- Перед списком новостей добавим форму для поиска -->
+    <form method="GET">
+      {{ filter.form }} <!-- Форму от фильтров за нас сделает Django. -->
+      <input type="submit" value="Найти">
+    </form>
+  </div>
 
-{% if search %}
   {% for n in search %}
     <h5>{{ n.header|censor_filter }}</h5>
     <p>{{ n.time_to_update|date:'M d Y' }}, {{ n.text|truncatechars:61|censor_filter }}</p>
@@ -19,9 +20,8 @@
     {% if not forloop.last %}
     <hr>
     {% endif %}
+  {% empty %}
+    <h2 style="text-align: center; margin-top: 20px">No matching news</h2>
   {% endfor %}
 
-{% else %}
-  <h2 style="text-align: center; margin-top: 20px">No matching news</h2>
-{% endif %}
 {% endblock content %}

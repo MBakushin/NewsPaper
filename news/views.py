@@ -1,24 +1,30 @@
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import render, reverse, redirect, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView,\
-                                 DeleteView, View
+                                 DeleteView
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 from .filters import PostFilter
 from .forms import NewsForm
 from .models import *
 
 
-class AuthorListView(ListView):
-    model = Author
-    ordering = 'user__username'
-    template_name = 'authors.html'
-    context_object_name = 'authors'
-
-
-class AuthorDetailView(DetailView):
-    model = Author
-    template_name = 'author.html'
-    context_object_name = 'author'
+# class AuthorListView(ListView):
+#     model = Author
+#     ordering = 'user__username'
+#     template_name = 'authors.html'
+#     context_object_name = 'authors'
+#
+#
+# class AuthorDetailView(DetailView):
+#     model = Author
+#     template_name = 'author.html'
+#     context_object_name = 'author'
 
 
 class BecameAuthor:
@@ -34,20 +40,20 @@ class BecameAuthor:
 class NewsListView(BecameAuthor, ListView):
     model = Post
     ordering = '-time_to_update'
-    template_name = 'allnews.html'
+    template_name = 'news/allnews.html'
     context_object_name = 'allnews'
     paginate_by = 3
 
 
 class NewsDetailView(BecameAuthor, DetailView):
     model = Post
-    template_name = 'news_detail.html'
+    template_name = 'news/news_detail.html'
     context_object_name = 'news_detail'
 
 
 class NewsSearchView(BecameAuthor, ListView):
     model = Post
-    template_name = 'search.html'
+    template_name = 'news/search.html'
     context_object_name = 'search'
     ordering = ['-time_to_update']
 
@@ -65,26 +71,50 @@ class NewsSearchView(BecameAuthor, ListView):
 
 
 class NewsAddView(BecameAuthor, PermissionRequiredMixin, CreateView):
-    template_name = 'news_add.html'
+    template_name = 'news/news_add.html'
     context_object_name = 'news'
     form_class = NewsForm
     permission_required = ('news.add_post', )
 
 
-class NewsEditView(BecameAuthor, PermissionRequiredMixin,
-                   UpdateView):
-    template_name = 'news_add.html'
+class NewsEditView(BecameAuthor, PermissionRequiredMixin, UpdateView):
+    template_name = 'news/news_add.html'
     form_class = NewsForm
     permission_required = ('news.change_post', )
 
     def get_object(self, **kwargs):
-        id = self.kwargs.get('pk')
-        return Post.objects.get(pk=id)
+        pk = self.kwargs.get('pk')
+        return Post.objects.get(pk=pk)
 
 
 class NewsDeleteView(BecameAuthor, PermissionRequiredMixin, DeleteView):
-    template_name = 'news_delete.html'
+    template_name = 'news/news_delete.html'
     context_object_name = 'news'
     queryset = Post.objects.all()
     success_url = '/news/'
     permission_required = ('news.view_post', )
+
+
+class NewsCategoriesView(BecameAuthor, ListView):
+    model = Category
+    template_name = 'news/categories.html'
+    context_object_name = 'categories'
+
+
+class NewsCategoryView(BecameAuthor, DetailView):
+    model = Category
+    template_name = 'news/category.html'
+    context_object_name = 'category'
+
+
+@login_required
+def change_sub(request, pk):
+    user = request.user
+    category = Category.objects.get(pk=pk)
+    if user in category.get_subs():
+        category.subscribers.remove(user)
+        message = "You've unsubscribed from "
+    else:
+        category.subscribers.add(user)
+        message = "You've subscribed to "
+    return render(request, 'news/subscribe.html', {'category': category, 'message': message})

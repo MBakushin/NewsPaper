@@ -1,5 +1,9 @@
+from datetime import date
+
 from django.db import models
-from django.contrib.auth.models import User  # mb need alias like authUser
+from django.contrib.auth.models import User
+from django.urls import reverse
+
 from .addition import *
 
 
@@ -13,6 +17,7 @@ class Author(models.Model):
 
     def update_rating(self):
         self.rating = 0
+
         # all author's posts rating multiply by 3
         r1 = Post.objects.filter(author=self.pk).values('rating')
         for r in r1:
@@ -39,9 +44,26 @@ class Category(models.Model):
     title = models.CharField(max_length=56, unique=True)
 
     posts = models.ManyToManyField('Post', through='PostCategory')
+    subscribers = models.ManyToManyField(User, through='UserCategory',
+                                         related_name='categories')
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('news_category', kwargs={'pk': self.pk})
+
+    def get_posts(self):
+        return Category.objects.get(pk=f'{self.pk}').posts.all()
+
+    def get_subs(self):
+        return Category.objects.get(pk=f'{self.pk}').subscribers.all()
+
+
+class UserCategory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE)
+
 
 class Post(models.Model, Grade):
     note = models.CharField(max_length=2, choices=NOTES, default=news)
@@ -58,7 +80,11 @@ class Post(models.Model, Grade):
         return f"{self.note}: {self.header}"
 
     def get_absolute_url(self):
-        return f'/news/{self.pk}'
+        return reverse('news_detail', kwargs={'pk': self.pk})
+
+    @staticmethod
+    def get_author_today_posts(author):
+        return Post.objects.filter(time_to_update__date=date.today()).filter(author=author)
 
     def preview(self):
         return f"{self.text[:125]}..."

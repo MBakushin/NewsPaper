@@ -1,14 +1,27 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>{% block head_title %}{% endblock head_title %}</title>
-    </head>
-    <body>
-        {% block body %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block head_title %}{% endblock head_title %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/account.css' %}">
+</head>
+<body>
+    <main>
+        {% if messages %}
+            <div>
+                <ul>
+                {% for message in messages %}
+                    <li>{{message}}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
         {% block content %}
+
         {% endblock content %}
-        {% endblock body %}
-        {% block extra_body %}
-        {% endblock extra_body %}
-    </body>
+    </main>
+</body>
 </html>

@@ -2,12 +2,15 @@
 
 {% load censor_filters %}
 
-{% block title %}Post{% endblock title %}
+{% block title %}{{ news_detail.header }}{% endblock title %}
 
 {% block content %}
   <h2 style="text-align: center">{{ news_detail.header|censor_filter }}</h2>
   <p>{{ news_detail.time_to_update|date:'M d Y' }}, {{ news_detail.text|censor_filter }}</p>
   {% if is_authors %}
-  <button><a href="{% url 'news_edit' news_detail.pk %}">Edit news</a></button>
+  <div>
+  <a class="btn btn-sm btn-success" href="{% url 'news_edit' news_detail.pk %}">Edit news</a>
+  <a class="btn btn-sm btn-danger" href="{% url 'news_delete' news_detail.pk %}">Delete news</a>
+  </div>
   {% endif %}
 {% endblock content %}

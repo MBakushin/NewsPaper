@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+    {% load account %} <!-- Загружаем тег, который позволит получить нам ссылку на подтверждение -->
+    <h1>Thank you for registering {{ user.username }} on <a href="http://127.0.0.1:8000/" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">NewsPaper</a>!</h1>
+    <h3>Please follow <a href="{{ activate_url }}">the link</a> to activate your account</h3>
+     <!-- Вставляем ссылку на активацию -->
+</body>
+</html>
+</html>

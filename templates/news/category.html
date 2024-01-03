@@ -1,0 +1,36 @@
+{% extends 'flatpages/default.html' %}
+
+{% load static %}
+
+{% load censor_filters %}
+
+{% block title %}{{ category.title }}{% endblock title %}
+
+
+{% block content %}
+
+  {% if request.user in category.get_subs %}
+  <div style="padding: .5rem">
+    <a type="button" class="btn btn-sm btn-danger" href="{% url 'sub' category.pk %}">
+      Unsubscribe from {{ category.title }}
+    </a>
+  </div>
+  {% else %}
+  <div style="padding: .5rem">
+    <a type="button" class="btn btn-sm btn-primary" href="{% url 'sub' category.pk %}">
+      Subscribe to {{ category.title }}
+    </a>
+  </div>
+  {% endif %}
+
+  {% for p in category.get_posts %}
+    <h5>{{ p.header|censor_filter }}</h5>
+    <p>{{ p.time_to_update|date:'M d Y' }}, {{ p.text|truncatechars:61|censor_filter }}</p>
+    <a href="{% url 'news_detail' p.id %}">Читать новость</a>
+    {% if not forloop.last %}
+      <hr>
+    {% endif %}
+  {% empty %}
+    <h2 style="text-align: center; margin-top: 20px">No news here</h2>
+  {% endfor %}
+{% endblock content %}
