@@ -22,25 +22,28 @@ def daily_posts():
     last_week = today - timedelta(days=7)
     all_daily_posts = Post.objects.filter(time_to_create__gte=last_week)
     categories = set(all_daily_posts.values_list('category__title', flat=True))
-    subscribers_email = set(Category.objects.filter(title__in=categories).values_list('subscribers__email', flat=True))
 
-    html_context = render_to_string(
-        'news/daily_posts_email.html',
-        {
-            'link': settings.SITE_URL,
-            'posts': posts,
-        }
-    )
+    for category in categories:
+        if category:
+            posts = all_daily_posts.filter(category__title=category)
+            subscribers_email = list(Category.objects.get(title=category).subscribers.all().values_list('email', flat=True))
+            html_context = render_to_string(
+                'news/daily_posts_email.html',
+                {
+                    'link': settings.SITE_URL,
+                    'posts': posts,
+                }
+            )
 
-    msg = EmailMultiAlternatives(
-        subject=f"Новые посты в категориях {categories}",
-        body='',
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=subscribers_email,
-    )
+            msg = EmailMultiAlternatives(
+                subject=f"Новые посты в категории {category}",
+                body='',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=subscribers_email,
+            )
 
-    msg.attach_alternative(html_context, 'text/html')
-    msg.send()
+            msg.attach_alternative(html_context, 'text/html')
+            msg.send()
 
 
 def delete_old_job_executions(max_age=604_800):
@@ -57,7 +60,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             daily_posts,
-            trigger=CronTrigger(day_of_week="wed", hour="14", minute="38"),
+            trigger=CronTrigger(day_of_week="wed", hour="15", minute="19"),
             id="daily_posts",  # unique id
             max_instances=1,
             replace_existing=True,
