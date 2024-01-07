@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 
 from config import settings
 from news.models import PostCategory, Post
+from news.tasks import send_notifications
 
 
 @receiver(pre_save, sender=Post)
@@ -15,25 +16,25 @@ def check_post_per_day(sender, instance, **kwargs):
         raise Exception(f'More than 3 posts per day by {author}')
 
 
-def send_notifications(pk, header, preview, subscribers_email):
-    html_context = render_to_string(
-        'news/post_created_email.html',
-        {
-            'header': header,
-            'text': preview,
-            'link': f'{settings.SITE_URL}/news/{pk}'
-        }
-    )
-
-    msg = EmailMultiAlternatives(
-        subject=header,
-        body='',
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=subscribers_email,
-    )
-
-    msg.attach_alternative(html_context, 'text/html')
-    msg.send()
+# def send_notifications(pk, header, preview, subscribers_email):
+#     html_context = render_to_string(
+#         'news/post_created_email.html',
+#         {
+#             'header': header,
+#             'text': preview,
+#             'link': f'{settings.SITE_URL}/news/{pk}'
+#         }
+#     )
+#
+#     msg = EmailMultiAlternatives(
+#         subject=header,
+#         body='',
+#         from_email=settings.DEFAULT_FROM_EMAIL,
+#         to=subscribers_email,
+#     )
+#
+#     msg.attach_alternative(html_context, 'text/html')
+#     msg.send()
 
 
 @receiver(m2m_changed, sender=PostCategory)
@@ -47,5 +48,5 @@ def notify_about_new_post(sender, instance, **kwargs):
 
         subscribers_email = [s.email for s in subscribers]
 
-        send_notifications(instance.pk, instance.header, instance.preview(),
+        send_notifications.delay(instance.pk, instance.header, instance.preview(),
                            subscribers_email)

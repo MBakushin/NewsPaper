@@ -63,6 +63,8 @@ INSTALLED_APPS = [
     # add apps news, sign
     'news.apps.NewsConfig',
     'sign',
+
+    'celery',
 ]
 
 SITE_ID = 1
@@ -133,6 +135,7 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
 
 SITE_URL = 'http://127.0.0.1:8000'
 
@@ -198,3 +201,10 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
+
+# celery settings
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
