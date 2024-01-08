@@ -12,8 +12,7 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.conf.beat_schedule = {
     "weekly_posts": {
         "task": "news.tasks.weekly_posts",
-        # "schedule": crontab(hour='11', minute='59', day_of_week='fri'),
-        "schedule": crontab('*/3'),
+        "schedule": crontab(hour='08', minute='00', day_of_week='mon'),
     }
 }
 

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from celery import shared_task
-from django.core.mail import EmailMultiAlternatives, send_mail
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from config import settings
