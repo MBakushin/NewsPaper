@@ -4,7 +4,8 @@
 
 {% block title %}News{% endblock title %}
 
-
+{% load cache %}
+{% cache 300 content %}
 {% block content %}
   {% for n in allnews %}
     <h5>{{ n.header|censor_filter }}</h5>
@@ -44,3 +45,4 @@
   {% endif %}
 
 {% endblock content %}
+{% endcache %}

@@ -50,6 +50,15 @@ class NewsDetailView(BecameAuthor, DetailView):
     template_name = 'news/news_detail.html'
     context_object_name = 'news_detail'
 
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'news-{self.kwargs["pk"]}', None)
+
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'news-{self.kwargs["pk"]}', obj)
+
+        return obj
+
 
 class NewsSearchView(BecameAuthor, ListView):
     model = Post

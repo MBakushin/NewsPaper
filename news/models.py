@@ -3,6 +3,7 @@ from datetime import date
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.core.cache import cache
 
 from .addition import *
 
@@ -81,6 +82,10 @@ class Post(models.Model, Grade):
 
     def get_absolute_url(self):
         return reverse('news_detail', kwargs={'pk': self.pk})
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(f'news-{self.pk}')
 
     @staticmethod
     def get_author_today_posts(author):
