@@ -160,4 +160,5 @@ cython_debug/
 .idea/
 
 # Cache files
-cache_files/
+cache_files/*
+!cache_files/.gitkeep
