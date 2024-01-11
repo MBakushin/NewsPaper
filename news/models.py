@@ -87,6 +87,11 @@ class Post(models.Model, Grade):
         super().save(*args, **kwargs)
         cache.delete(f'news-{self.pk}')
 
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        cache.delete(f'news-{self.pk}')
+
+
     @staticmethod
     def get_author_today_posts(author):
         return Post.objects.filter(time_to_update__date=date.today()).filter(author=author)

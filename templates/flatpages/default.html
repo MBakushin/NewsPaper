@@ -15,7 +15,7 @@
     <body>
         <!-- Responsive navbar-->
         {% load cache %}
-        {% cache 3600 navbar %}
+        {% cache 30 navbar %}
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
            <div class="container">
                <a class="navbar-brand" href="{% url 'home' %}">NewsPaper</a>

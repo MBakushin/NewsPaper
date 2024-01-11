@@ -104,6 +104,11 @@ class NewsDeleteView(BecameAuthor, PermissionRequiredMixin, DeleteView):
     permission_required = ('news.view_post', )
 
 
+class NewsMaxPostsPerDayView(BecameAuthor, View):
+    template_name = 'news/max_posts_per_day.html'
+    context_object_name ='max_posts_per_day'
+
+
 class NewsCategoriesView(BecameAuthor, ListView):
     model = Category
     template_name = 'news/categories.html'

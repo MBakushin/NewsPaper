@@ -1,6 +1,7 @@
 from django.core.mail import EmailMultiAlternatives
 from django.db.models.signals import m2m_changed, pre_save
 from django.dispatch import receiver
+from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 
 from config import settings
@@ -12,6 +13,7 @@ from news.tasks import send_notifications
 def check_post_per_day(sender, instance, **kwargs):
     author = instance.author
     today_posts = Post.get_author_today_posts(author)
+
     if len(today_posts) >= 4:
         raise Exception(f'More than 3 posts per day by {author}')
 
